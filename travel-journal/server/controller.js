@@ -25,15 +25,10 @@ module.exports = {
 
             CREATE TABLE cities (
                 city_id SERIAL PRIMARY KEY,
-                name VARCHAR,
+                name VARCHAR(128),
                 rating INT,
                 country_id INT REFERENCES countries(country_id)
             );
-
-            INSERT INTO cities (name, rating)
-            VALUES ('Paradise', 3),
-                    ('Orem', 2),
-                    ('Spanish Fork', 3);
 
             insert into countries (name)
             values ('Afghanistan'),
@@ -239,21 +234,20 @@ module.exports = {
 
     getCountries: (req, res) => {
         sequelize.query(`
-        SELECT * FROM countries`)
+        SELECT * FROM countries;
+        `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
     },
 
     createCity: (req, res) => {
 
-        let {
-            name,
-            rating,
-            country_id
-        } = req.body
+        let { name, rating, countryId } = req.body
 
         sequelize.query(`
-        INSERT INTO cities (${name}, ${rating}, ${country_id})`)
+        INSERT INTO cities (name, rating, country_id)
+        VALUES ('${name}', ${rating}, ${countryId});
+        `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
     },
