@@ -30,6 +30,11 @@ module.exports = {
                 country_id INT REFERENCES countries(country_id)
             );
 
+            INSERT INTO cities (name, rating)
+            VALUES ('Paradise', 3),
+                    ('Orem', 2),
+                    ('Spanish Fork', 3);
+
             insert into countries (name)
             values ('Afghanistan'),
             ('Albania'),
@@ -248,8 +253,7 @@ module.exports = {
         } = req.body
 
         sequelize.query(`
-        INSERT INTO cities(name, rating, country_id)
-        VALUES (${name}, ${rating}, ${country_id})`)
+        INSERT INTO cities (${name}, ${rating}, ${country_id})`)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
     },
@@ -258,7 +262,8 @@ module.exports = {
         sequelize.query(`
         SELECT cities.city_id, cities.name AS city, cities.rating, countries.country_id, countries.name AS country 
         FROM cities
-        INNER JOIN countries ON cities.country_id=countries.country_id;`)
+        INNER JOIN countries ON cities.country_id=countries.country_id
+        ORDER BY rating DESC;`)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
     },
